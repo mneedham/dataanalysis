@@ -11,7 +11,7 @@ sampleSet <- initial[sample(1:nrow(initial), 10000), ]
 sampleSet.labels <- as.factor(sampleSet$label)
 
 # show how many times each label appears
-table(as.factor(sampleSet$label))
+table(sampleSet.labels)
 
 # various statistics about the data set
 summary(sampleSet)
@@ -28,3 +28,36 @@ apply(subset(sampleSet, select = -label), 2, var)
 # get data set excluding label
 # http://stackoverflow.com/questions/6286313/remove-an-entire-column-from-a-data-frame-in-r
 subset(sampleSet, select = -label)
+
+# show all the features which don't have any variance - all have the same value
+excludingLabel <- subset( sampleSet, select = -label)
+variances <- apply(excludingLabel, 2, var)
+names(excludingLabel[variances == 0][1,])
+
+# get the names of the labels which have no variance
+pointlessFeatures <- names(excludingLabel[variances == 0][1,])
+write(file="pointless-features.txt", pointlessFeatures)
+
+# count how many labels have no variance
+length(names(excludingLabel[apply(excludingLabel, 2, var) == 0][1,]))
+
+tiny <- sampleSet[1:5, 200:210]
+apply(tiny, 1, mean)
+
+countZeros <- function(entries) {
+  length(Filter(function (x) x == 0, entries))
+}
+
+apply(tiny, 1, countZeros)
+apply(tiny, 1, function(entries) length(Filter(function (x) x != 0, entries)))
+
+tiny$nonZeros <- apply(tiny, 1, function(entries) length(Filter(function (x) x != 0, entries)))
+
+# put the non zeros into the data frame
+initial$nonZeros <- apply(initial, 1, function(entries) length(Filter(function (x) x != 0, entries)))
+
+# print out the labels and non zero counts
+subset(initial, select=c(label, nonZeros))
+
+# scatter plot showing labels vs non zero value
+smoothScatter(initial$label, initial$nonZeros)
