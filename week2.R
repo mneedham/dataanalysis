@@ -132,3 +132,21 @@ split(mtcars, mtcars$cyl)
 tapply(mtcars$mpg, mtcars$cyl, mean)
 
 horseyp <- tapply(mtcars$hp, mtcars$cyl, mean)
+
+my.var <- function(x) {
+  m <- mean(x)
+  return (sum((x-m) ^ 2) / (length(x) - 1))
+}
+
+
+data.file <- file.path('~/Documents/dataanalysis/', '01_heights_weights_genders.csv')
+heights.weights <- read.csv(data.file, header = TRUE, sep = ',')
+ggplot(heights.weights, aes(x=Height)) + geom_histogram(binwidth=0.1)
+ggplot(heights.weights, aes(x=Height, fill = Gender)) + geom_density()
+ggplot(heights.weights, aes(x=Weight, fill = Gender)) + geom_density() + facet_grid(Gender ~ .)
+
+set.seed(1)
+normal.values <- rnorm(250,0,1)
+cauchy.values <- rcauchy(250,0,1)
+ggplot(data.frame(X=normal.values), aes(x = X)) + geom_density()
+ggplot(data.frame(X=cauchy.values), aes(x = X)) + geom_density()

@@ -1,3 +1,4 @@
+initial <- read.csv("train.csv", header = TRUE)
 initial <- read.csv("train.csv", nrows=10000, header = TRUE)
 classes <- sapply(initial, class)
 
@@ -55,9 +56,19 @@ tiny$nonZeros <- apply(tiny, 1, function(entries) length(Filter(function (x) x !
 
 # put the non zeros into the data frame
 initial$nonZeros <- apply(initial, 1, function(entries) length(Filter(function (x) x != 0, entries)))
+initial$fullHouses <- apply(initial, 1, function(entries) length(Filter(function (x) x == 255, entries)))
+initial$meanPixels <- apply(initial, 1, mean)
 
 # print out the labels and non zero counts
 subset(initial, select=c(label, nonZeros))
 
 # scatter plot showing labels vs non zero value
 smoothScatter(initial$label, initial$nonZeros)
+
+initial.pca <- prcomp(~ ., data = initial, cor = TRUE)
+
+newFeatures <- subset(initial[1:10,], select=c(label, nonZeros, meanPixels, fullHouses))
+newFeatures <- subset(initial, select=c(label, nonZeros, meanPixels, fullHouses))
+write.table(file="feature-extraction.txt", newFeatures, row.names=FALSE, sep=",")
+
+write.table(file="train-plus-features.csv", initial, row.names=FALSE, sep=",")
