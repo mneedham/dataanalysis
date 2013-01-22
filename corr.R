@@ -16,7 +16,7 @@ corr <- function(directory, threshold = 0) {
   relevantFiles <- Filter(function(file) nrow(totallyNA(readFile(file))) > threshold, allTheFiles)
   
   if(length(relevantFiles) == 0)
-    0
+    numeric()
   else
     sapply(relevantFiles, function(file) correlation(totallyNA(readFile(file))))
   
