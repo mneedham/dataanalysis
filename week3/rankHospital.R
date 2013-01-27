@@ -26,7 +26,7 @@ rankhospital <- function(state, outcome, num = "best") {
   if(is.numeric(num)) {
     position <- num
   } else if(num == "best") {
-    position <- 0
+    position <- 1
   } else {
     position <- nrow(sorted[!is.na(sorted[sortColumn]),])
   }
