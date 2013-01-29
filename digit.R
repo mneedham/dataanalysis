@@ -58,6 +58,20 @@ tiny$nonZeros <- apply(tiny, 1, function(entries) length(Filter(function (x) x !
 initial$nonZeros <- apply(initial, 1, function(entries) length(Filter(function (x) x != 0, entries)))
 initial$fullHouses <- apply(initial, 1, function(entries) length(Filter(function (x) x == 255, entries)))
 initial$meanPixels <- apply(initial, 1, mean)
+initial$middlePixels <- apply(initial[,200:500], 1, mean)
+
+initial$label <- as.factor(initial$label)
+
+x <- initial[1:20,]
+
+middlePixels <- x[,300:600]
+apply(middlePixels, 1, mean)
+
+tiny <- subset(initial, select=c(label, nonZeros, meanPixels, fullHouses, middlePixels))
+
+cor(subset(tiny, select=c(label)), subset(tiny, select=c(fullHouses, nonZeros, meanPixels, middlePixels)))
+
+chisq.test(subset(tiny, select=c(label, middlePixels)))
 
 # print out the labels and non zero counts
 subset(initial, select=c(label, nonZeros))
